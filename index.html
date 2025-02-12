@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="png" href="img/icon.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Weather App</title>
+  </head>
+  <body>
+    <div class="pc">
+      <header class="header">
+        <h2>Weather App</h2>
+        <div class="search">
+          <div class="search-icon">
+            <i class="fa-solid fa-location-dot"></i>
+          </div>
+          <input
+            class="searchinput"
+            type="text"
+            placeholder="Enter city name..."
+          />
+        </div>
+        <div class="message">
+          <p>You can search by city, state, or country.</p>
+        </div>
+        <div class="error-message">
+          <p><i class="fa-solid fa-triangle-exclamation"></i> City not found. Please try again.</p>
+        </div>
+      </header>
+
+      <main id="screen">
+
+        <div class="city-name">
+          <i class="fa-solid fa-map-pin"></i>
+          <h1 id="city-name">City</h1>
+        </div>
+        <div class="weather-icon-css">
+          <img class="weather-icon" src="img/sun.png" alt="weather icon" />
+        </div>
+        <div class="weather-description">
+          <div class="temperature">
+            <div class="show-metric" id="metric">0°</div>
+            <button id="temp-toggle" class="temp-toggle">°F</button>
+          </div>
+          <div class="weather-details">
+            <div class="weather-main" id="weather-main">Sunny</div>
+          </div>
+        </div>
+
+        <section class="additional-details">
+          <div class="detail-box">
+            <i class="fa-solid fa-wind"></i>
+            <span class="detail-label">Wind</span>
+            <span id="wind">0 m/s</span>
+          </div>
+          <div class="detail-box">
+            <i class="fa-solid fa-temperature-full"></i>
+            <span class="detail-label">Pressure</span>
+            <span id="pressure">0 hPa</span>
+          </div>
+          <div class="detail-box">
+            <i class="fa-solid fa-droplet"></i>
+            <span class="detail-label">Humidity</span>
+            <span id="humidity-detail">0%</span>
+          </div>
+          <div class="detail-box">
+            <i class="fa-solid fa-sun"></i>
+            <span class="detail-label">Sunrise</span>
+            <span id="sunrise">--:--</span>
+          </div>
+          <div class="detail-box">
+            <i class="fa-solid fa-cloud-sun"></i>
+            <span class="detail-label">Sunset</span>
+            <span id="sunset">--:--</span>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
