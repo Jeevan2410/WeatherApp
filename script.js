@@ -1,4 +1,4 @@
-// Your existing API key and other functions…
+
 
 let apiKey = "f8230e5fda9c61f79a851d946c0af8fb";
 
@@ -74,24 +74,24 @@ async function searchWeather(query) {
     const data = await response.json();
     updateDOM(data);
 
-    // Hide any previous messages (if you wish)
+
     document.querySelector(".error-message").style.display = "none";
     document.querySelector(".message").style.display = "none";
   } catch (error) {
     console.error(error);
-    // Instead of just showing the error-message div, we now call the pop-up function:
+
     showErrorPopup("City not found. Please try again.");
   }
 }
 
-// Function to display an error pop-up message with a Font Awesome icon
+
 function showErrorPopup(message) {
   const popup = document.createElement("div");
   popup.className = "error-popup";
   popup.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${message}`;
   document.body.appendChild(popup);
 
-  // Remove the popup after 3 seconds
+ 
   setTimeout(() => {
     popup.remove();
   }, 3000);
