@@ -1,87 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="png" href="img/icon.png" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="style.css" />
-    <title>Weather App</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Weather</title>
+    <meta name="description" content="Live weather, the next 24 hours and a 7-day forecast for any place, over an animated sky." />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://api.open-meteo.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="src/main.js"></script>
   </head>
-  <body>
-    <div class="pc">
-      <header class="header">
-        <h2>Weather App</h2>
-        <div class="search">
-          <div class="search-icon">
-            <i class="fa-solid fa-location-dot"></i>
-          </div>
-          <input
-            class="searchinput"
-            type="text"
-            placeholder="Enter city name..."
-          />
-        </div>
-        <div class="message">
-          <p>You can search by city, state, or country.</p>
-        </div>
-        <div class="error-message">
-          <p><i class="fa-solid fa-triangle-exclamation"></i> City not found. Please try again.</p>
-        </div>
-      </header>
-
-      <main id="screen">
-
-        <div class="city-name">
-          <i class="fa-solid fa-map-pin"></i>
-          <h1 id="city-name">City</h1>
-        </div>
-        <div class="weather-icon-css">
-          <img class="weather-icon" src="img/sun.png" alt="weather icon" />
-        </div>
-        <div class="weather-description">
-          <div class="temperature">
-            <div class="show-metric" id="metric">0°</div>
-            <button id="temp-toggle" class="temp-toggle">°F</button>
-          </div>
-          <div class="weather-details">
-            <div class="weather-main" id="weather-main">Sunny</div>
-          </div>
-        </div>
-
-        <section class="additional-details">
-          <div class="detail-box">
-            <i class="fa-solid fa-wind"></i>
-            <span class="detail-label">Wind</span>
-            <span id="wind">0 m/s</span>
-          </div>
-          <div class="detail-box">
-            <i class="fa-solid fa-temperature-full"></i>
-            <span class="detail-label">Pressure</span>
-            <span id="pressure">0 hPa</span>
-          </div>
-          <div class="detail-box">
-            <i class="fa-solid fa-droplet"></i>
-            <span class="detail-label">Humidity</span>
-            <span id="humidity-detail">0%</span>
-          </div>
-          <div class="detail-box">
-            <i class="fa-solid fa-sun"></i>
-            <span class="detail-label">Sunrise</span>
-            <span id="sunrise">--:--</span>
-          </div>
-          <div class="detail-box">
-            <i class="fa-solid fa-cloud-sun"></i>
-            <span class="detail-label">Sunset</span>
-            <span id="sunset">--:--</span>
-          </div>
-        </section>
-      </main>
+  <body class="loading">
+    <div class="sky" id="sky" data-kind="clear" data-time="day" aria-hidden="true">
+      <div class="stars"></div>
+      <i class="shooting"></i>
+      <div class="sun"></div>
+      <div class="moon"></div>
+      <div class="clouds"></div>
+      <div class="fog"><i></i><i></i></div>
+      <canvas class="precip"></canvas>
+      <div class="flash"></div>
     </div>
 
-    <script src="script.js"></script>
+    <header class="bar">
+      <a class="brand" href="./">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="24" cy="22" r="12" fill="#fbbf24" />
+          <path d="M20 46h26a10 10 0 0 0 1-19.9A14 14 0 0 0 20.4 24 11 11 0 0 0 20 46z" transform="translate(4 8)" fill="#f1f5f9" />
+        </svg>
+        Weather
+      </a>
+      <form class="search" id="search" role="search" autocomplete="off">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+        <input
+          id="q"
+          type="search"
+          placeholder="Search for a city"
+          aria-label="Search for a city"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded="false"
+          aria-controls="suggestions"
+          enterkeyhint="search"
+          spellcheck="false"
+        />
+        <ul class="suggestions" id="suggestions" role="listbox" aria-label="Places" hidden></ul>
+      </form>
+      <button class="icon-btn" id="locate" type="button" aria-label="Use my location" title="Use my location">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v3m0 14v3M2 12h3m14 0h3" />
+        </svg>
+      </button>
+      <div class="units" id="units" role="group" aria-label="Temperature unit">
+        <button type="button" data-unit="C" aria-pressed="true">°C</button>
+        <button type="button" data-unit="F" aria-pressed="false">°F</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="card now" style="--i: 0" aria-labelledby="place">
+        <div>
+          <h1 class="place" id="place">Finding your weather…</h1>
+          <p class="date" id="date">&nbsp;</p>
+        </div>
+        <div class="now-main">
+          <div class="now-icon" id="now-icon"></div>
+          <p class="temp"><span id="temp">--</span><span class="deg" id="unit-sign">°C</span></p>
+        </div>
+        <div>
+          <p class="label" id="label">&nbsp;</p>
+          <p class="range" id="range">&nbsp;</p>
+        </div>
+      </section>
+
+      <section class="card details" style="--i: 1" aria-labelledby="details-title">
+        <h2 id="details-title">Right now</h2>
+        <dl class="grid">
+          <div><dt>Feels like</dt><dd id="feels">--</dd></div>
+          <div><dt>Humidity</dt><dd id="humidity">--</dd></div>
+          <div><dt>Wind</dt><dd id="wind">--</dd></div>
+          <div><dt>Pressure</dt><dd id="pressure">--</dd></div>
+        </dl>
+        <div class="daylight">
+          <svg class="arc" viewBox="0 0 200 108" aria-hidden="true">
+            <line class="horizon" x1="0" y1="100" x2="200" y2="100" />
+            <path class="arc-track" d="M10 100a90 90 0 0 1 180 0" />
+            <path class="arc-done" id="arc-done" d="M10 100a90 90 0 0 1 180 0" pathLength="100" />
+            <circle class="arc-sun" id="arc-sun" r="7" cx="10" cy="100" />
+          </svg>
+          <div class="sun-times">
+            <span><small>Sunrise</small><b id="sunrise">--:--</b></span>
+            <span><small>Sunset</small><b id="sunset">--:--</b></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card hourly" style="--i: 2" aria-labelledby="hourly-title">
+        <h2 id="hourly-title">Next 24 hours</h2>
+        <ol class="hours" id="hours" tabindex="0" aria-labelledby="hourly-title"></ol>
+      </section>
+
+      <section class="card week" style="--i: 3" aria-labelledby="week-title">
+        <h2 id="week-title">7-day forecast</h2>
+        <ol class="days" id="days"></ol>
+      </section>
+    </main>
+
+    <p class="visually-hidden" id="announce" aria-live="polite"></p>
+    <div class="toast" id="toast" role="status" hidden></div>
+
+    <footer class="credit">
+      Weather data by <a href="https://open-meteo.com/">Open-Meteo</a> (CC BY 4.0) · Built by
+      <a href="https://github.com/Jeevan2410">Jeevan</a>
+    </footer>
   </body>
 </html>
